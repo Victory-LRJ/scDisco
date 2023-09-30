@@ -4,8 +4,7 @@ The code for "scDisco: Integration of scRNA-seq Data by Disentangled Representat
 The sources of all preprocessed data used in this work are available at https://drive.google.com/drive/folders/1OCN6UmUsM98CpsecpbmQZsXmS0HKcB4k?usp=drive_link.
 
 The figure of scDisco is shown below.
-
-[![](file:///model.png)](https://github.com/Victory-LRJ/scDisco/blob/main/model.png?raw=true)
+![image](https://github.com/Victory-LRJ/scDisco/assets/94903606/9225e808-7f20-49c9-b639-8ff2ef07e976)
 
 #### demo
 
