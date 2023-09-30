@@ -5,7 +5,7 @@ The sources of all preprocessed data used in this work are available at https://
 
 The figure of scDisco is shown below.
 
-![](file:///D:/0AALRJ/scRNA-seq/0A_Paper_LRJ/%E5%AE%9E%E9%AA%8C%E5%9B%BE/model.png)
+![](file:///model.png)
 
 #### demo
 
