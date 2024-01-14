@@ -23,7 +23,11 @@ for i in seed:
     adata.obs['batch'] = adata.obs['batch'].astype('category')
     adata.obs['condition'] = adata.obs['condition'].astype('category')
 
-    ho = hm.run_harmony(adata.X, adata.obs, ['batch'])
+    # sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
+    # sc.pp.log1p(adata)
+    pca = PCA(n_components=20)
+    data = pca.fit_transform(adata.X)
+    ho = hm.run_harmony(data, adata.obs, ['batch'])
 
     corrd = pd.DataFrame(ho.Z_corr.T)
     adata_corrd = ad.AnnData(corrd, obs=adata.obs, var=adata.var, dtype='float64')
@@ -39,7 +43,11 @@ for i in seed:
 def my_func(adata):
     set_seed(2023)
     start = time()
-    ho = hm.run_harmony(adata.X, adata.obs, ['batch'])
+    # sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
+    # sc.pp.log1p(adata)
+    pca = PCA(n_components=20)
+    data = pca.fit_transform(adata.X)
+    ho = hm.run_harmony(data, adata.obs, ['batch'])
     end = time()
     print('elapsed{:.2f} seconds'.format(end - start))
     return ho
