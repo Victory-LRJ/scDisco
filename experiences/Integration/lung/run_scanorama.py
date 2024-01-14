@@ -23,6 +23,11 @@ for i in seed:
     adata.obs['batch'] = adata.obs['batch'].astype('category')
     adata.obs['condition'] = adata.obs['condition'].astype('category')
 
+    sc.pp.filter_genes(adata, min_cells=1)
+    sc.pp.filter_cells(adata, min_genes=600)
+    cell_norms = np.linalg.norm(adata.X, axis=1, ord=2)
+    adata.X /= cell_norms[:, None]
+
     adata_corr = []
     genes_ = []
     all_batch = list(set(adata.obs['batch']))
@@ -46,6 +51,11 @@ for i in seed:
 @profile
 def my_func(adata):
     set_seed(2023)
+    sc.pp.filter_genes(adata, min_cells=1)
+    sc.pp.filter_cells(adata, min_genes=600)
+    cell_norms = np.linalg.norm(adata.X, axis=1, ord=2)
+    adata.X /= cell_norms[:, None]
+    
     adata_corr = []
     genes_ = []
     all_batch = list(set(adata.obs['batch']))
