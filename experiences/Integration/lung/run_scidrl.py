@@ -21,7 +21,7 @@ for i in seed:
     sess = tf.compat.v1.Session(graph=tf.compat.v1.get_default_graph(), config=session_conf)
     tf.compat.v1.keras.backend.set_session(sess)
 
-    d = np.load(data_dir + 'sampling/' + str(i) + '_' + 'lung_raw.npz', allow_pickle=True)
+    d = np.load(data_dir + 'sampling/' + str(i) + '_' + 'lung_raw_scidrl.npz', allow_pickle=True)
 
     adata = ad.AnnData(d['X_latent'])
     adata.obs['celltype'] = np.array(d['celltype'])
@@ -32,8 +32,8 @@ for i in seed:
     adata.obs['batch'] = adata.obs['batch'].astype('category')
     adata.obs['condition'] = adata.obs['condition'].astype('category')
 
-    data_file = data_dir + 'sampling/' + str(i) + '_' + 'lung_raw.csv'
-    meta_file = data_dir + 'sampling/' + str(i) + '_' + 'meta.csv'
+    data_file = data_dir + 'sampling/' + str(i) + '_' + 'lung_raw_scidrl.csv'
+    meta_file = data_dir + 'sampling/' + str(i) + '_' + 'meta_scidrl.csv'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--zdim', type=int, default=16, help='Dim of embedding.')
@@ -86,9 +86,9 @@ if __name__ == '__main__':
     sess = tf.compat.v1.Session(graph=tf.compat.v1.get_default_graph(), config=session_conf)
     tf.compat.v1.keras.backend.set_session(sess)
 
-    data_file = data_dir+'lung_raw.csv'
-    meta_file = data_dir+'meta.csv'
-    adata = sc.read_h5ad(data_dir + 'adata_lung.h5ad')
+    data_file = data_dir+'lung_raw_scidrl.csv'
+    meta_file = data_dir+'meta_scidrl.csv'
+    adata = sc.read_h5ad(data_dir + 'adata_lung_scidrl.h5ad')
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--zdim', type=int, default=16, help='Dim of embedding.')
