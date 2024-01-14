@@ -6,15 +6,15 @@ library(stringr)
 library(aricode)
 
 # ### 1. Running Complete data by scINSIGHT -------------------------------------------------
-data_dir = '../../datasets/E-MTAB-5061/'
+data_dir = '../../datasets/pancreas2/'
 # # prepare data
 meta = read.csv(paste0(data_dir, "meta.csv"))
 row.names(meta)=meta[['X']]
 
-Convert(paste0(data_dir, "adata_1.42.h5ad"), dest="h5seurat",
+Convert(paste0(data_dir, "human_pancreas2.h5ad"), dest="h5seurat",
         assay = "RNA",
         overwrite=F)
-seurat_object <- LoadH5Seurat(paste0(data_dir , "adata_1.42.h5seurat"),
+seurat_object <- LoadH5Seurat(paste0(data_dir , "human_pancreas2.h5seurat"),
                               meta.data = FALSE, misc = FALSE)
 seurat_object <- UpdateSeuratObject(seurat_object)
 colnames(seurat_object@assays[["RNA"]]@data) <- meta[['X']]
@@ -35,10 +35,12 @@ conditions <- as.character(conditions)
 data.list <- lapply(data.list, function(x) {
   x <- subset(x, subset = nFeature_RNA > 200)
   x <- NormalizeData(x)
-  all.genes <- rownames(x)
-  x <- ScaleData(x, features = all.genes)
+  x = FindVariableFeatures(x, selection.method = "vst", nfeatures = 2000)
   return(x)
 })
+
+# Select the 2000 gene features for all samples
+features = SelectIntegrationFeatures(object.list = data.list, nfeatures = 2000)
 
 mapping.list <- lapply(data.list, function(seurat_obj) {
   data.frame(seurat_obj@meta.data[["batch"]],
@@ -51,8 +53,12 @@ colnames(mapping)<- c("batch", 'celltype', 'disease')
 
 matrix_list <- list()
 for (i in 1:length(data.list)) {
-  matrix <- data.list[[i]]@assays[["RNA"]]@scale.data
+  matrix <- data.list[[i]]@assays[["RNA"]]@data[features, ]
   matrix_list[[i]] <- matrix
+}
+
+for (i in 1:length(matrix_list)) {
+  matrix_list[[i]] <- as(matrix_list[[i]], "matrix")
 }
 # run scINSIGHT
 ptm <- proc.time()
@@ -64,7 +70,7 @@ scinsight_result <- run_scINSIGHT(scinsight_object,
                                   thre.niter = 500,
                                   thre.delta = 0.01,
                                   num.cores = 1,
-                                  B = 3,
+                                  B = 5,
                                   out.dir = NULL,
                                   method = "increase")
 time = proc.time()-ptm
@@ -83,6 +89,3 @@ write.csv(results, paste0(data_dir, "pancreas2_scINSIGHT.csv"))
 
 print(memory.profile())
 print(memory.size(max=TRUE))
-
-
-
