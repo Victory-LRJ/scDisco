@@ -12,6 +12,11 @@ data_dir = '../../datasets/human_ductal/'
 @profile
 def my_func(adata):
     set_seed(2023)
+    sc.pp.filter_genes(adata, min_cells=1)
+    sc.pp.filter_cells(adata, min_genes=600)
+    adata.X = adata.X.todense()
+    cell_norms = np.linalg.norm(adata.X, axis=1, ord=2)
+    adata.X /= cell_norms[:, None]
     adata_corr = []
     genes_ = []
     all_batch = list(set(adata.obs['batch']))
