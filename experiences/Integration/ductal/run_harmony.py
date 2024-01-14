@@ -14,7 +14,11 @@ data_dir = '../../datasets/human_ductal/'
 def my_func(adata):
     set_seed(2023)
     start = time()
-    ho = hm.run_harmony(adata.X, adata.obs, ['batch'])
+    sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
+    sc.pp.log1p(adata)
+    pca = PCA(n_components=20)
+    data = pca.fit_transform(adata.X)
+    ho = hm.run_harmony(data, adata.obs, ['batch'])
     end = time()
     print('elapsed{:.2f} seconds'.format(end - start))
     return ho
@@ -23,6 +27,7 @@ if __name__ == '__main__':
     set_seed(2023)
     adata = sc.read_h5ad(data_dir + 'human_ductal.h5ad')
     adata.X = adata.X.todense()
+    adata.X = np.asarray(adata.X)
 
     ho = my_func(adata)
 
