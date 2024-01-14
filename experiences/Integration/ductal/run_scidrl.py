@@ -31,9 +31,9 @@ if __name__ == '__main__':
     sess = tf.compat.v1.Session(graph=tf.compat.v1.get_default_graph(), config=session_conf)
     tf.compat.v1.keras.backend.set_session(sess)
 
-    data_file = data_dir+'ductal_raw.csv'
-    meta_file = data_dir+'meta.csv'
-    adata = sc.read_h5ad(data_dir + 'human_ductal.h5ad')
+    data_file = data_dir+'ductal_raw_scidrl.csv'
+    meta_file = data_dir+'meta_scidrl.csv'
+    adata = sc.read_h5ad(data_dir + 'human_ductal_scidrl.h5ad')
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--zdim', type=int, default=16, help='Dim of embedding.')
