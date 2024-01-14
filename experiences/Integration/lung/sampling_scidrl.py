@@ -9,13 +9,13 @@ from util.datasets import data_sample
 data_dir = '../../../datasets/lung/'
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 # ## 1.1 Read datasets from source
-# adata = sc.read_h5ad(data_dir + 'human_lung_scidrl.h5ad')
+# adata = sc.read_h5ad(data_dir + 'adata_lung_scidrl.h5ad')
 # sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
 # sc.pp.log1p(adata)
 # sc.pp.highly_variable_genes(adata, n_top_genes=1000, flavor='seurat_v3', inplace=True)
-# adata.write_h5ad(data_dir + 'human_lung_scidrl.h5ad')
+# adata.write_h5ad(data_dir + 'adata_lung_scidrl.h5ad')
 
-adata = sc.read_h5ad(data_dir + 'human_lung_scidrl.h5ad')
+adata = sc.read_h5ad(data_dir + 'adata_lung_scidrl.h5ad')
 
 data = pd.DataFrame(adata.X, index=adata.obs_names, dtype='float64')
 data.to_csv(data_dir + 'lung_raw_scidrl.csv')
