@@ -37,10 +37,10 @@ conditions <- as.character(conditions)
 data.list <- lapply(data.list, function(x) {
   x <- subset(x, subset = nFeature_RNA > 200)
   x <- NormalizeData(x)
-  all.genes <- rownames(x)
-  x <- ScaleData(x, features = all.genes)
+  x = FindVariableFeatures(x, selection.method = "vst", nfeatures = 2000)
   return(x)
 })
+features = SelectIntegrationFeatures(object.list = data.list, nfeatures = 2000)
 
 mapping.list <- lapply(data.list, function(seurat_obj) {
   data.frame(seurat_obj@meta.data[["batch"]],
@@ -53,9 +53,13 @@ colnames(mapping)<- c("batch", 'celltype', 'age')
 
 matrix_list <- list()
 for (i in 1:length(data.list)) {
-  matrix <- data.list[[i]]@assays[["RNA"]]@scale.data
+  matrix <- data.list[[i]]@assays[["RNA"]]@data[features, ]
   matrix_list[[i]] <- matrix
 }
+for (i in 1:length(matrix_list)) {
+  matrix_list[[i]] <- as(matrix_list[[i]], "matrix")
+}
+
 # run scINSIGHT
 ptm <- proc.time()
 scinsight_object <- create_scINSIGHT(matrix_list, conditions)
@@ -66,7 +70,7 @@ scinsight_result <- run_scINSIGHT(scinsight_object,
                                   thre.niter = 500,
                                   thre.delta = 0.01,
                                   num.cores = 1,
-                                  B = 3,
+                                  B = 5,
                                   out.dir = NULL,
                                   method = "increase")
 time = proc.time()-ptm
